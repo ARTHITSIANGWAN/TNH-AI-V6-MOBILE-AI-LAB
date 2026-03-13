@@ -1,0 +1,10 @@
+# Zero Garbage Policy - ThitNueaHub Elite
+*.ipynb
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+notebooks/
+t/
+node_modules/
+.env
+*.json
+!*.template.json
