@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐅 ThitNueaHub Cockpit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f172a; } /* สีน้ำเงินเข้มอวกาศ */
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="text-white flex items-center justify-center min-h-screen p-4">
+
+    <div class="glass-panel rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
+        
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold tracking-wider text-green-400 mb-2">🐅 ThitNueaHub</h1>
+            <p class="text-xs text-gray-400">MOBILE AI LAB : V7 IGNITE</p>
+            <div class="mt-4 inline-flex items-center px-3 py-1 rounded-full bg-green-500/20 text-green-300 text-xs font-medium">
+                <span class="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
+                System Online
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            
+            <button onclick="fireAPI('/api/ignite')" class="w-full relative group overflow-hidden rounded-lg bg-blue-600 px-5 py-4 text-sm font-bold text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:bg-blue-500 transition-all">
+                <span class="relative z-10 flex items-center justify-center">
+                    🚀 1-CLICK IGNITE (เริ่มภารกิจ)
+                </span>
+            </button>
+
+            <button onclick="fireAPI('/api/surgery')" class="w-full relative group overflow-hidden rounded-lg bg-purple-600 px-5 py-4 text-sm font-bold text-white shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:bg-purple-500 transition-all">
+                <span class="relative z-10 flex items-center justify-center">
+                    🎨 SURGERY (ผ่าตัดหลังบ้าน)
+                </span>
+            </button>
+
+        </div>
+
+        <div class="mt-6 text-left">
+            <p class="text-xs text-gray-500 mb-1">Live Terminal:</p>
+            <div id="terminal" class="bg-black/50 rounded-lg p-3 h-24 overflow-y-auto text-xs font-mono text-green-400 border border-gray-800">
+                > รอรับคำสั่งจากเจ้านาย...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // เจ้านายเอา URL ของ Cloud Run มาใส่ตรงนี้ครับ!
+        const CLOUD_RUN_URL = "https://thitnueahub-mobile-ai-lab-968501187230.asia-southeast1.run.app"; 
+
+        function logToTerminal(message) {
+            const term = document.getElementById('terminal');
+            term.innerHTML += `<br>> ${message}`;
+            term.scrollTop = term.scrollHeight;
+        }
+
+        async function fireAPI(endpoint) {
+            logToTerminal(`Initiating ${endpoint}...`);
+            try {
+                // ส่ง Request แบบง่ายๆ
+                const response = await fetch(CLOUD_RUN_URL + endpoint, {
+                    method: 'POST',
+                    mode: 'no-cors', // ใส่ไว้กันเบราว์เซอร์บล็อก (Zero Garbage style)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: "EXECUTE_V7", from: "Cockpit" })
+                });
+                
+                logToTerminal(`✅ ส่งคำสั่งสำเร็จ! เช็ก Discord ได้เลยงับ`);
+            } catch (error) {
+                logToTerminal(`❌ Error: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>
