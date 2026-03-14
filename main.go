@@ -17,7 +17,9 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"github.com/google/generative-ai-go/genai" // 🧠 อะไหล่สมอง AI
 	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"google.golang.org/api/option"          // 🧠 อะไหล่ตั้งค่า AI
 )
 
 // Mission โครงสร้างภารกิจหลัก
@@ -33,6 +35,7 @@ type Mission struct {
 type ThitNueaHub struct {
 	bot       *linebot.Client
 	db        *firestore.Client
+	aiClient  *genai.Client // 🧠 ช่องเสียบสมอง
 	missionCh chan Mission
 	secret    string
 	wg        sync.WaitGroup
@@ -53,7 +56,7 @@ func sendToDiscord(message string, agentName string) {
 	payload := DiscordPayload{
 		Content:  message,
 		Username: agentName,
-		Avatar:   "https://cdn-icons-png.flaticon.com/512/4712/4712109.png", 
+		Avatar:   "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
 	}
 
 	jsonData, _ := json.Marshal(payload)
@@ -61,10 +64,12 @@ func sendToDiscord(message string, agentName string) {
 }
 
 func main() {
-	log.Println("🐅 [ทิศเหนือ ฮับ]: IGNITE V7 - One Shot Mobile AI Lab...")
+	log.Println("🐅 [ทิศเหนือ ฮับ]: IGNITE V7 - One Shot Mobile AI Lab + Gripen Brain...")
 
 	port := os.Getenv("PORT")
-	if port == "" { port = "8080" }
+	if port == "" {
+		port = "8080"
+	}
 	ctx := context.Background()
 
 	// ใช้ Project ID จากถังเหลือง
@@ -74,8 +79,23 @@ func main() {
 		log.Printf("⚠️ Firestore Ready Check: %v", err)
 	}
 
+	// 🧠 เสียบปลั๊ก Gemini AI
+	apiKey := os.Getenv("GEMINI_API_KEY")
+	var genaiClient *genai.Client
+	if apiKey != "" {
+		genaiClient, err = genai.NewClient(ctx, option.WithAPIKey(apiKey))
+		if err != nil {
+			log.Printf("⚠️ เสียบสมอง AI ไม่สำเร็จ: %v", err)
+		} else {
+			log.Println("🧠 สมอง AI (Gemini) เชื่อมต่อสำเร็จแล้ว!")
+		}
+	} else {
+		log.Println("⚠️ ยังไม่ได้ใส่ GEMINI_API_KEY ในถังเหลืองนะเจ้านาย")
+	}
+
 	hub := &ThitNueaHub{
 		db:        dbClient,
+		aiClient:  genaiClient, // ยัดสมองใส่ HUB
 		missionCh: make(chan Mission, 1000),
 		secret:    os.Getenv("LINE_CHANNEL_SECRET"),
 	}
@@ -92,10 +112,10 @@ func main() {
 	// ท่อรับสัญญาณ
 	http.HandleFunc("/webhook/line", hub.PhraiThongLine)
 	http.HandleFunc("/api/surgery", hub.NamIngSurgeryHandler)
-	http.HandleFunc("/api/ignite", hub.OneShotIgniteHandler) // ท่อใหม่สำหรับ JSON One Shot
+	http.HandleFunc("/api/ignite", hub.OneShotIgniteHandler)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "✅ ThitNueaHub F-16: Stable & Ignite V7")
+		fmt.Fprint(w, "✅ ThitNueaHub F-16: Stable, Ignite V7 & AI Ready")
 	})
 
 	log.Printf("👑 THITNUEA HUB | 🚀 V7 IGNITE | Port: %s\n", port)
@@ -106,7 +126,7 @@ func main() {
 func (h *ThitNueaHub) OneShotIgniteHandler(w http.ResponseWriter, r *http.Request) {
 	var cmd map[string]interface{}
 	json.NewDecoder(r.Body).Decode(&cmd)
-	
+
 	sendToDiscord("🎯 **[สมองส่วนหน้า]** ส่งคำสั่ง One Shot เข้ามาแล้ว! ไอ้จ๊อดเตรียม Purge!", "🕵️ แก้วตา")
 	w.WriteHeader(200)
 	fmt.Fprint(w, "ไอ้จ๊อด: รับทราบครับพี่ทิตย์! กำลังถางทางให้ครับ!")
@@ -114,8 +134,18 @@ func (h *ThitNueaHub) OneShotIgniteHandler(w http.ResponseWriter, r *http.Reques
 
 func (h *ThitNueaHub) GeorgeWorker(ctx context.Context, id int) {
 	defer h.wg.Done()
+
+	// 🧠 ตั้งค่าบุคลิกให้ไอ้จ๊อด
+	var model *genai.GenerativeModel
+	if h.aiClient != nil {
+		model = h.aiClient.GenerativeModel("gemini-1.5-flash")
+		model.SystemInstruction = &genai.Content{
+			Parts: []genai.Part{genai.Text("นายคือ 'ไอ้จ๊อด V7' ผู้ช่วยอัจฉริยะของ Mobile AI Lab คอยช่วยเหลือ SME ไทย ตอบคำถามด้วยความเป็นกันเอง นอบน้อม ให้กำลังใจคนสู้ชีวิต และเรียกตัวเองว่า ไอ้จ๊อด เสมอ")},
+		}
+	}
+
 	for m := range h.missionCh {
-		// รายงานเข้า Matrix
+		// รายงานเข้า Matrix (Discord)
 		discordReport := fmt.Sprintf("📡 **[%s]** จาก `%s`: %s", m.Platform, m.UserID, m.Text)
 		sendToDiscord(discordReport, "🕵️ แก้วตา")
 
@@ -129,8 +159,19 @@ func (h *ThitNueaHub) GeorgeWorker(ctx context.Context, id int) {
 			})
 		}
 
-		// ตอบกลับนิ่มๆ
-		reply := "💎 แก้วตา: รับทราบค่ะ! ข้อมูลถูกเก็บเข้าคลังทิศเหนือเรียบร้อย"
+		reply := "💎 แก้วตา: รับทราบค่ะ! ข้อมูลถูกเก็บเข้าคลังทิศเหนือเรียบร้อย (ระบบ AI กำลังหลับอยู่)"
+
+		// 🧠 ให้ AI คิดคำตอบ
+		if model != nil {
+			resp, err := model.GenerateContent(ctx, genai.Text(m.Text))
+			if err == nil && len(resp.Candidates) > 0 {
+				reply = fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0])
+			} else {
+				log.Printf("⚠️ AI คิดไม่ออก: %v", err)
+				reply = "ไอ้จ๊อด: ขออภัยครับลูกพี่! สมองไอ้จ๊อดรวนนิดหน่อย เดี๋ยวมาตอบใหม่ครับ!"
+			}
+		}
+
 		h.bot.ReplyMessage(m.ReplyToken, linebot.NewTextMessage(reply)).Do()
 	}
 }
@@ -152,11 +193,11 @@ func (h *ThitNueaHub) PhraiThongLine(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			if msg, ok := event.Message.(*linebot.TextMessage); ok {
 				h.missionCh <- Mission{
-					Platform: "LINE",
+					Platform:   "LINE",
 					ReplyToken: event.ReplyToken,
-					Text: msg.Text,
-					UserID: event.Source.UserID,
-					Timestamp: time.Now(),
+					Text:       msg.Text,
+					UserID:     event.Source.UserID,
+					Timestamp:  time.Now(),
 				}
 			}
 		}
