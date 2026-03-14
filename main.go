@@ -20,12 +20,14 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
+// Mission โครงสร้างภารกิจหลัก
 type Mission struct {
 	Platform   string
 	ReplyToken string
 	Text       string
 	UserID     string
 	Timestamp  time.Time
+	IsAdmin    bool // เพิ่มเพื่อเช็คสิทธิ์สมองส่วนหน้า
 }
 
 type ThitNueaHub struct {
@@ -45,8 +47,7 @@ type DiscordPayload struct {
 func sendToDiscord(message string, agentName string) {
 	webhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
 	if webhookURL == "" {
-		log.Println("⚠️ สถาปนิกเตือน: ท่อ DISCORD_WEBHOOK_URL ยังไม่ได้เชื่อมต่อ!")
-		return
+		return // เงียบไว้ถ้ายังไม่เสียบท่อ Discord
 	}
 
 	payload := DiscordPayload{
@@ -56,31 +57,21 @@ func sendToDiscord(message string, agentName string) {
 	}
 
 	jsonData, _ := json.Marshal(payload)
-	req, _ := http.NewRequest("POST", webhookURL, bytes.NewBuffer(jsonData))
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("❌ ยิง Discord พลาด: %v\n", err)
-		return
-	}
-	defer resp.Body.Close()
+	http.Post(webhookURL, "application/json", bytes.NewBuffer(jsonData))
 }
 
 func main() {
-	log.Println("🐅 [ทิศเหนือ ฮับ]: IGNITE - Mobile AI Lab Online...")
+	log.Println("🐅 [ทิศเหนือ ฮับ]: IGNITE V7 - One Shot Mobile AI Lab...")
 
 	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	if port == "" { port = "8080" }
 	ctx := context.Background()
 
+	// ใช้ Project ID จากถังเหลือง
 	projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
 	dbClient, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
-		log.Printf("⚠️ Firestore Warning: %v", err)
+		log.Printf("⚠️ Firestore Ready Check: %v", err)
 	}
 
 	hub := &ThitNueaHub{
@@ -92,24 +83,56 @@ func main() {
 	lineToken := os.Getenv("LINE_CHANNEL_ACCESS_TOKEN")
 	hub.bot, _ = linebot.New(hub.secret, lineToken)
 
-	sendToDiscord("🚀 **[SYSTEM IGNITE]** ThitNueaHub Mobile AI Lab พร้อมทะยานเข้าสู่ Matrix แล้วเจ้านาย!", "🐅 ทิศเหนือ ฮับ (System)")
-
+	// ไอ้จ๊อดสแตนบาย 10 แรงม้า
 	for i := 1; i <= 10; i++ {
 		hub.wg.Add(1)
 		go hub.GeorgeWorker(ctx, i)
 	}
 
+	// ท่อรับสัญญาณ
 	http.HandleFunc("/webhook/line", hub.PhraiThongLine)
-	http.HandleFunc("/webhook/facebook", hub.PhraiThongMeta)
-	http.HandleFunc("/webhook/telegram", hub.PhraiThongTelegram)
 	http.HandleFunc("/api/surgery", hub.NamIngSurgeryHandler)
+	http.HandleFunc("/api/ignite", hub.OneShotIgniteHandler) // ท่อใหม่สำหรับ JSON One Shot
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "✅ ThitNueaHub F-16: Stable & Ignite")
+		fmt.Fprint(w, "✅ ThitNueaHub F-16: Stable & Ignite V7")
 	})
 
-	log.Printf("👑 THITNUEA HUB | 🚀 GLOBAL IGNITE | Port: %s\n", port)
+	log.Printf("👑 THITNUEA HUB | 🚀 V7 IGNITE | Port: %s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+// OneShotIgniteHandler สำหรับรับ JSON คำสั่งจาก UI/UX เจ้านาย
+func (h *ThitNueaHub) OneShotIgniteHandler(w http.ResponseWriter, r *http.Request) {
+	var cmd map[string]interface{}
+	json.NewDecoder(r.Body).Decode(&cmd)
+	
+	sendToDiscord("🎯 **[สมองส่วนหน้า]** ส่งคำสั่ง One Shot เข้ามาแล้ว! ไอ้จ๊อดเตรียม Purge!", "🕵️ แก้วตา")
+	w.WriteHeader(200)
+	fmt.Fprint(w, "ไอ้จ๊อด: รับทราบครับพี่ทิตย์! กำลังถางทางให้ครับ!")
+}
+
+func (h *ThitNueaHub) GeorgeWorker(ctx context.Context, id int) {
+	defer h.wg.Done()
+	for m := range h.missionCh {
+		// รายงานเข้า Matrix
+		discordReport := fmt.Sprintf("📡 **[%s]** จาก `%s`: %s", m.Platform, m.UserID, m.Text)
+		sendToDiscord(discordReport, "🕵️ แก้วตา")
+
+		// บันทึกแบบ "ข้อมูลไม่ทิ้งกัน"
+		if h.db != nil {
+			h.db.Collection("missions").Add(ctx, map[string]interface{}{
+				"user_id":   m.UserID,
+				"text":      m.Text,
+				"platform":  m.Platform,
+				"timestamp": m.Timestamp,
+			})
+		}
+
+		// ตอบกลับนิ่มๆ
+		reply := "💎 แก้วตา: รับทราบค่ะ! ข้อมูลถูกเก็บเข้าคลังทิศเหนือเรียบร้อย"
+		h.bot.ReplyMessage(m.ReplyToken, linebot.NewTextMessage(reply)).Do()
+	}
 }
 
 func (h *ThitNueaHub) PhraiThongLine(w http.ResponseWriter, r *http.Request) {
@@ -118,7 +141,7 @@ func (h *ThitNueaHub) PhraiThongLine(w http.ResponseWriter, r *http.Request) {
 	hash.Write(body)
 	sig := r.Header.Get("X-Line-Signature")
 	if base64.StdEncoding.EncodeToString(hash.Sum(nil)) != sig {
-		http.Error(w, "Unauthorized", 401)
+		w.WriteHeader(401)
 		return
 	}
 
@@ -129,11 +152,11 @@ func (h *ThitNueaHub) PhraiThongLine(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			if msg, ok := event.Message.(*linebot.TextMessage); ok {
 				h.missionCh <- Mission{
-					Platform:   "LINE",
+					Platform: "LINE",
 					ReplyToken: event.ReplyToken,
-					Text:       msg.Text,
-					UserID:     event.Source.UserID,
-					Timestamp:  time.Now(),
+					Text: msg.Text,
+					UserID: event.Source.UserID,
+					Timestamp: time.Now(),
 				}
 			}
 		}
@@ -142,35 +165,6 @@ func (h *ThitNueaHub) PhraiThongLine(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ThitNueaHub) NamIngSurgeryHandler(w http.ResponseWriter, r *http.Request) {
-	sendToDiscord("🎨 **[น้ำอิง]** ได้รับคำสั่งผ่าตัด (Surgery) จากหน้าแอปแล้วค่ะเจ้านาย!", "🧑‍🎨 น้ำอิง")
+	sendToDiscord("🎨 **[น้ำอิง]** เริ่มปฏิบัติการผ่าตัดหลังบ้าน!", "🧑‍🎨 น้ำอิง")
 	w.WriteHeader(200)
-	fmt.Fprint(w, "น้ำอิง: ทิศเหนือ ฮับ จัดการให้เรียบร้อยแล้วค่ะ!")
-}
-
-func (h *ThitNueaHub) PhraiThongMeta(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
-}
-
-func (h *ThitNueaHub) PhraiThongTelegram(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
-}
-
-func (h *ThitNueaHub) GeorgeWorker(ctx context.Context, id int) {
-	defer h.wg.Done()
-	for m := range h.missionCh {
-		discordReport := fmt.Sprintf("📡 **[สัญญาณจาก %s]**\n👤 ผู้ใช้: `%s`\n💬 ข้อความ: *%s*", m.Platform, m.UserID, m.Text)
-		sendToDiscord(discordReport, "🕵️ แก้วตา (ศูนย์บัญชาการ)")
-
-		if h.db != nil {
-			_, _, _ = h.db.Collection("missions").Add(ctx, map[string]interface{}{
-				"user_id":   m.UserID,
-				"text":      m.Text,
-				"platform":  m.Platform,
-				"timestamp": m.Timestamp,
-			})
-		}
-
-		reply := "💎 แก้วตา: ทิศเหนือ ฮับ รับทราบค่ะ! กำลังส่งให้น้ำอิงจัดการนะคะ"
-		h.bot.ReplyMessage(m.ReplyToken, linebot.NewTextMessage(reply)).Do()
-	}
 }
