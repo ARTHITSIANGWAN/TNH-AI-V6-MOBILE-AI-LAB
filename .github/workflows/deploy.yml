@@ -1,21 +1,33 @@
 name: Deploy Mobile AI Lab to Cloud Run
+
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Google Auth
+        uses: google-github-actions/auth@v1
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy thn-mobile-ai-lab \
+          gcloud run deploy thitnueahub-mobile-ai-lab \
             --source . \
+            --project thitnueahub-mobile-ai-lab \
             --region asia-southeast1 \
-            --platform managed \
             --allow-unauthenticated \
-            --set-env-vars "LINE_CHANNEL_SECRET=${{ secrets.LINE_SECRET }},LINE_CHANNEL_ACCESS_TOKEN=${{ secrets.LINE_TOKEN }},GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }},DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_URL }}"
-            
+            --set-env-vars "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},LINE_CHANNEL_SECRET=${{ secrets.LINE_CHANNEL_SECRET }},LINE_CHANNEL_ACCESS_TOKEN=${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }},GOOGLE_CLOUD_PROJECT=thitnueahub-mobile-ai-lab"
+
+
+
