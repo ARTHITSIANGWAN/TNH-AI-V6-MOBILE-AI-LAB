@@ -3,17 +3,19 @@ name: Deploy ThitNueaHub Core
 on:
   push:
     branches:
-      - main  # ถ้าพี่ทิตย์ใช้ชื่อกิ่ง master ให้แก้บรรทัดนี้เป็น master นะครับ
+      - main
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        id: auth
+      - name: Google Auth
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
@@ -21,7 +23,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Build and Deploy to Cloud Run
+      - name: Deploy to Cloud Run
         run: |
           gcloud run deploy thitnueahub-mobile-ai-lab \
             --source . \
