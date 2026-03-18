@@ -109,6 +109,33 @@
                 logToTerminal(`❌ Error: ${err.message}`);
             }
         }
-    </script>
+    </async function fireAPI(endpoint) {
+    logToTerminal(`Initiating ${endpoint}...`);
+    
+    // รีเซ็ตแถบ (Reset Bars)
+    document.getElementById('bar-1').style.width = '0%';
+    document.getElementById('bar-2').style.width = '0%';
+
+    try {
+        // ขั้นตอน 1: รับส่งข้อมูล (วิ่งไป 100%)
+        document.getElementById('bar-1').style.width = '100%';
+        document.getElementById('step-2').style.opacity = '1';
+        
+        const response = await fetch(CLOUD_RUN_URL + endpoint, { 
+            method: 'POST', 
+            mode: 'no-cors' 
+        });
+
+        // ขั้นตอน 2: ประมวลผล (วิ่งไป 100% หลังจากดีเลย์นิดนึงให้ดูขลัง)
+        setTimeout(() => {
+            document.getElementById('bar-2').style.width = '100%';
+            logToTerminal(`✅ กระบวนการเสร็จสมบูรณ์ (Basic Mode)`);
+        }, 800);
+
+    } catch (error) {
+        logToTerminal(`❌ Error: ${error.message}`);
+    }
+                }
+                   >
 </body>
 </html>
