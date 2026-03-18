@@ -1,36 +1,21 @@
-name: Deploy ThitNueaHub Core
-
-on:
-  push:
-    branches:
-      - main
-
-env:
-  # สั่งให้ใช้ Node.js 24 ตามที่มันต้องการ จะได้เลิกบ่น!
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Build and Deploy to Cloud Run
-        run: |
-          gcloud run deploy thitnueahub-mobile-ai-lab \
-            --source . \
-            --project project-6e34f0b2-4c9d-4422-865 \
-            --region asia-southeast1 \
-            --allow-unauthenticated \
-            --quiet
-            
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThitNueaHub Mobile AI Lab</title>
+    <style>
+        body { background: #0d1117; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
+        .logo { width: 280px; filter: drop-shadow(0 0 20px #58a6ff); margin-bottom: 20px; }
+        h1 { font-size: 1.8rem; letter-spacing: 3px; text-transform: uppercase; color: #58a6ff; }
+        .tagline { color: #8b949e; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div>
+        <img src="5072.png" class="logo">
+        <h1>ThitNueaHub</h1>
+        <p class="tagline">"พายุไม่ได้มาเพื่อทำลาย... แต่มาเพื่อประกาศศักดา"</p>
+    </div>
+</body>
+</html>
