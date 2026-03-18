@@ -92,50 +92,47 @@
 
             try {
                 // Step 1 Simulation
+                    <script>
+        const CLOUD_RUN_URL = "https://thitnueahub-mobile-ai-lab-968501187230.asia-southeast1.run.app";
+
+        function logToTerminal(msg) {
+            const t = document.getElementById('terminal');
+            t.innerHTML += `<br>> ${msg}`;
+            t.scrollTop = t.scrollHeight;
+        }
+
+        async function fireAPI(endpoint) {
+            logToTerminal(`Initiating ${endpoint}...`);
+            
+            // 1. รีเซ็ตสถานะ
+            document.getElementById('bar-1').style.width = '0%';
+            document.getElementById('bar-2').style.width = '0%';
+            document.getElementById('percent-1').innerText = '0%';
+            document.getElementById('percent-2').innerText = '0%';
+            document.getElementById('step-2').style.opacity = '0.4';
+
+            try {
+                // 2. ขั้นตอน 1: รับข้อมูล (วิ่งไป 100%)
                 document.getElementById('bar-1').style.width = '100%';
                 document.getElementById('percent-1').innerText = '100%';
-                document.getElementById('step-2').classList.remove('opacity-40');
+                
+                const response = await fetch(CLOUD_RUN_URL + endpoint, { 
+                    method: 'POST', 
+                    mode: 'no-cors' 
+                });
 
-                const response = await fetch(CLOUD_RUN_URL + endpoint, { method: 'POST', mode: 'no-cors' });
-
-                // Step 2 Simulation (ให้ดูว่าประมวลผลแป๊บเดียวจบ)
+                // 3. ขั้นตอน 2: ประมวลผล (ดีเลย์ 0.8 วิ ให้ดูขลัง)
                 setTimeout(() => {
+                    document.getElementById('step-2').style.opacity = '1';
                     document.getElementById('bar-2').style.width = '100%';
                     document.getElementById('percent-2').innerText = '100%';
-                    logToTerminal(`✅ Mission Completed.`);
-                }, 600);
+                    logToTerminal(`✅ กระบวนการเสร็จสมบูรณ์ (Basic Mode)`);
+                }, 800);
 
-            } catch (err) {
-                logToTerminal(`❌ Error: ${err.message}`);
+            } catch (error) {
+                logToTerminal(`❌ Error: ${error.message}`);
             }
         }
-    </async function fireAPI(endpoint) {
-    logToTerminal(`Initiating ${endpoint}...`);
-    
-    // รีเซ็ตแถบ (Reset Bars)
-    document.getElementById('bar-1').style.width = '0%';
-    document.getElementById('bar-2').style.width = '0%';
-
-    try {
-        // ขั้นตอน 1: รับส่งข้อมูล (วิ่งไป 100%)
-        document.getElementById('bar-1').style.width = '100%';
-        document.getElementById('step-2').style.opacity = '1';
-        
-        const response = await fetch(CLOUD_RUN_URL + endpoint, { 
-            method: 'POST', 
-            mode: 'no-cors' 
-        });
-
-        // ขั้นตอน 2: ประมวลผล (วิ่งไป 100% หลังจากดีเลย์นิดนึงให้ดูขลัง)
-        setTimeout(() => {
-            document.getElementById('bar-2').style.width = '100%';
-            logToTerminal(`✅ กระบวนการเสร็จสมบูรณ์ (Basic Mode)`);
-        }, 800);
-
-    } catch (error) {
-        logToTerminal(`❌ Error: ${error.message}`);
-    }
-                }
-                   >
+    </script>
 </body>
 </html>
