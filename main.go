@@ -8,31 +8,25 @@ import (
 )
 
 func main() {
-	// กำหนด Port สำหรับ Cloud Run
+	// รับ Port จาก Google Cloud
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	// Serve Static Files (เพื่อให้ดึงรูปภาพขึ้นมาโชว์ได้)
-	fs := http.FileServer(http.Dir("."))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
-	// Handler สำหรับหน้าแรก
+	// หน้าแรกแสดงผล index.html
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// ป้องกันปัญหาเบราว์เซอร์ดาวน์โหลดไฟล์ แทนที่จะแสดงผล
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		http.ServeFile(w, r, "index.html")
 	})
 
-	// เพื่อให้หน้าเว็บดึงรูปภาพจากโฟลเดอร์เดียวกันได้เลย
-	http.HandleFunc("/7873.jpg", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "7873.jpg")
+	// ดึงรูปเสือขาว image_0.png
+	http.HandleFunc("/image_0.png", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "image_0.png")
 	})
 
-	fmt.Printf("ThitNueaHub Server starting on port %s...\n", port)
+	fmt.Printf("🚀 ThitNueaHub Engine Starting on port %s...\n", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }
-
