@@ -11,12 +11,12 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
-# ก๊อปไฟล์โปรแกรมมา
+# 1. ก๊อปตัวโปรแกรมมา
 COPY --from=builder /app/thn-core .
 
-# --- สำคัญมาก: ก๊อปโฟลเดอร์หน้าเว็บ (HTML/CSS/Images) มาด้วย ---
-# ถ้าพี่ใช้ชื่อโฟลเดอร์อื่น (เช่น public) ให้แก้คำว่า static เป็นชื่อนั้นนะครับ
-COPY --from=builder /app/static ./static
+# 2. ก๊อปไฟล์หน้าเว็บและรูป (เพราะพี่วางไว้ข้างนอก ไม่ได้ใส่โฟลเดอร์)
+COPY --from=builder /app/index.html .
+COPY --from=builder /app/image_0.png .
 
 EXPOSE 8080
 CMD ["./thn-core"]
