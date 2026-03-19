@@ -14,7 +14,7 @@ WORKDIR /root/
 # 1. ก๊อปตัวโปรแกรมมา
 COPY --from=builder /app/thn-core .
 
-# 2. ก๊อปไฟล์หน้าเว็บและรูป (เพราะพี่วางไว้ข้างนอก ไม่ได้ใส่โฟลเดอร์)
+# 2. ก๊อปไฟล์หน้าเว็บและรูป (ตรงตามโครงสร้างไฟล์ใน GitHub ของพี่เป๊ะๆ)
 COPY --from=builder /app/index.html .
 COPY --from=builder /app/image_0.png .
 
