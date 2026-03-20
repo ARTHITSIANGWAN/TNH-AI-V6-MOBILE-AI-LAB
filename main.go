@@ -111,4 +111,3 @@ func main() {
 	fmt.Printf("🚪 ThitNueaHub Gate Open on Port: %s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
-
