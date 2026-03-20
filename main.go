@@ -12,8 +12,8 @@ import (
 )
 
 func logIdentity() {
-	fmt.Println("🐅 ThitNueaHub: Dark-Relay Fusion Active V3.5")
-	fmt.Println("🚀 System: IGNITE V7 | Engine: Go | Cloud: Run")
+	fmt.Println("🐅 ThitNueaHub: Dark-Relay Fusion Active V3.8")
+	fmt.Println("🚀 System: IGNITE V7 | AI: Gemini 3 Flash | Engine: Go")
 }
 
 func runScheduler() {
@@ -36,9 +36,10 @@ func runScheduler() {
 		}
 		fmt.Printf("😴 [Gas Station]: Next Relay at %s\n", nextRun.Format("15:04:05"))
 		time.Sleep(time.Until(nextRun))
+		
 		if err := darkRelayExecution(); err != nil {
-			log.Printf("❌ Recall: %v", err)
-			time.Sleep(5 * time.Minute)
+			log.Printf("❌ Snake Nudge Error: %v", err)
+			time.Sleep(2 * time.Minute) // ปรับ Retry ให้เร็วขึ้นตามสปีด Flash
 			darkRelayExecution()
 		}
 	}
@@ -48,23 +49,42 @@ func darkRelayExecution() error {
 	apiKey := os.Getenv("GEMINI_API_KEY")
 	tgToken := os.Getenv("TELEGRAM_TOKEN")
 	chatID := os.Getenv("CHAT_ID")
-	if apiKey == "" { return fmt.Errorf("credentials missing") }
-	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey
+	if apiKey == "" { return fmt.Errorf("secure credentials missing") }
+
+	// อัปเดต Endpoint เป็นรุ่นล่าสุด (รองรับ Gemini 3 Flash)
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=" + apiKey
+
 	payload, _ := json.Marshal(map[string]interface{}{
-		"contents": []map[string]interface{}{{"parts": []map[string]string{{"text": "Elite tech insight for SME, Professional Thai, Zero-Garbage."}}}},
+		"contents": []map[string]interface{}{
+			{"parts": []map[string]string{{"text": "Task: Generate an elite tech insight for SME. Style: Aggressive, Zero-Garbage, Highly Professional. Language: Thai."}}},
+		},
+		"generationConfig": map[string]interface{}{
+			"temperature": 0.7,
+			"topP": 0.95,
+			"maxOutputTokens": 1024,
+		},
 	})
+
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(payload))
 	if err != nil { return err }
 	defer resp.Body.Close()
+
 	body, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("API Error %d: %s", resp.StatusCode, string(body))
+	}
+
 	var result map[string]interface{}
 	json.Unmarshal(body, &result)
+
+	// สกัดเนื้อหา (Gemini 3 Structure)
 	candidates := result["candidates"].([]interface{})
 	content := candidates[0].(map[string]interface{})["content"].(map[string]interface{})
 	parts := content["parts"].([]interface{})
 	finalText := parts[0].(map[string]interface{})["text"].(string)
+
 	if tgToken != "" {
-		sendTelegram(tgToken, chatID, "🛡️ **DARK-RELAY REPORT**\n\n"+finalText)
+		sendTelegram(tgToken, chatID, "🛡️ **DARK-RELAY FUSION REPORT (Gemini 3)**\n\n"+finalText)
 	}
 	return nil
 }
@@ -88,6 +108,7 @@ func main() {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		http.ServeFile(w, r, "web/index.html")
 	})
-	fmt.Printf("🚪 Gate Open on Port: %s\n", port)
+	fmt.Printf("🚪 ThitNueaHub Gate Open on Port: %s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
+
