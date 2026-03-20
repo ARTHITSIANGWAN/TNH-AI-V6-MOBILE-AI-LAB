@@ -1,17 +1,26 @@
 name: Deploy ThitNueaHub Core
 
+# --- [🛡️ คำสั่งยา: ยับยั้งการวิ่งแซงกัน] ---
+# ถ้าเจ้านายกด Push ใหม่ ตัวเก่าที่ค้างสีฟ้าจะถูก Cancel ทันที!
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
       - main
 
 env:
-  # ดับคำเตือน Node 24 ตามประกาศที่พี่ส่งมา
+  # ดับคำเตือน Node 24 ตามประกาศ (บังคับใช้รันเนอร์รุ่นใหม่)
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # เพิ่ม Timeout ป้องกันมันหมุนค้างนานเกินไป (ถ้าเกิน 10 นาทีให้ตัดจบ)
+    timeout-minutes: 10 
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -26,11 +35,15 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Build and Deploy to Cloud Run
+        # เพิ่ม Flag --no-traffic เพื่อความชัวร์ หรือใช้ --clear-vpc-connector-on-error ถ้ามีปัญหา Network
         run: |
           gcloud run deploy thitnueahub-mobile-ai-lab \
             --source . \
             --project project-6e34f0b2-4c9d-4422-865 \
             --region asia-southeast1 \
             --allow-unauthenticated \
-            --quiet
+            --quiet \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1
             
