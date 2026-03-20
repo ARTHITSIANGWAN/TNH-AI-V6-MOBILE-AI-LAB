@@ -5,141 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThitNueaHub | Mobile AI Lab</title>
     <style>
-        /* --- [BASE & LAYOUT] --- */
-        body {
-            background-color: #05070a;
-            color: #ffffff;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .main-card {
-            padding: 30px;
-            animation: fadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 90%;
-        }
-
-        /* --- [VIRTUAL TIGER FRAME] --- */
-        .tiger-frame {
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid rgba(88, 166, 255, 0.5);
-            box-shadow: 0 0 60px rgba(88, 166, 255, 0.2);
-            margin: 0 auto 25px;
-            position: relative;
-        }
-        
-        .tiger-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .tiger-frame:hover img {
-            transform: scale(1.05);
-        }
-
-        /* --- [TYPOGRAPHY] --- */
-        h1 {
-            font-size: 2.5rem;
-            letter-spacing: 6px;
-            margin: 0;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, #ffffff 0%, #58a6ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
-        .subtitle {
-            color: #58a6ff;
-            font-weight: 600;
-            letter-spacing: 3px;
-            margin-top: 10px;
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-
-        /* --- [STATUS BAR COMPONENT] --- */
-        .status-bar {
-            background: rgba(88, 166, 255, 0.08);
-            border: 1px solid rgba(88, 166, 255, 0.2);
-            border-radius: 50px;
-            padding: 10px 24px;
-            font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            margin: 25px 0;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #00ffc3;
-            border-radius: 50%;
-            margin-right: 12px;
-            box-shadow: 0 0 15px #00ffc3;
-            animation: pulse 2s infinite;
-        }
-
-        .quote {
-            color: #8b949e;
-            font-style: italic;
-            margin-top: 25px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            max-width: 320px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* --- [ANIMATIONS] --- */
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-            .tiger-frame { width: 220px; height: 220px; }
-        }
+        body { background-color: #05070a; color: #fff; font-family: system-ui, sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+        .main-card { padding: 20px; animation: fadeIn 1.2s ease-out; }
+        .tiger-frame { width: 250px; height: 250px; border-radius: 50%; overflow: hidden; border: 2px solid #58a6ff; box-shadow: 0 0 40px rgba(88,166,255,0.3); margin: 0 auto 20px; }
+        .tiger-frame img { width: 100%; height: 100%; object-fit: cover; }
+        h1 { font-size: 2.2rem; letter-spacing: 4px; margin: 0; background: linear-gradient(to right, #fff, #58a6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .status-bar { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); border-radius: 50px; padding: 8px 20px; font-size: 0.75rem; display: inline-flex; align-items: center; margin: 20px 0; }
+        .status-dot { width: 8px; height: 8px; background: #00ffc3; border-radius: 50%; margin-right: 10px; box-shadow: 0 0 10px #00ffc3; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-
     <div class="main-card">
-        <div class="tiger-frame">
-            <img src="image_0.png" alt="ThitNueaHub Majestic Tiger">
-        </div>
-        
+        <div class="tiger-frame"><img src="image_0.png" alt="Tiger"></div>
         <h1>ThitNueaHub</h1>
-        <div class="subtitle">MOBILE AI LABORATORY</div>
-        
-        <div class="status-bar">
-            <div class="status-dot"></div>
-            <span>SYSTEM ONLINE: DARK-RELAY V3.5 ACTIVE</span>
-        </div>
-
-        <p class="quote">"พายุไม่ได้มาเพื่อทำลาย... แต่มาเพื่อประกาศศักดา และมอบโอกาสให้ผู้ที่กล้าจะเปลี่ยน"</p>
+        <div class="status-bar"><div class="status-dot"></div>SYSTEM ONLINE: DARK-RELAY V3.5</div>
+        <p style="color:#8b949e; font-style:italic;">"พายุไม่ได้มาเพื่อทำลาย... แต่มาเพื่อประกาศศักดา"</p>
     </div>
-
 </body>
 </html>
