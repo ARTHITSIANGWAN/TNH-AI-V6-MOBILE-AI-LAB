@@ -1,8 +1,5 @@
---project thitnueahub-mobile-ai-lab
-Core
+name: Deploy ThitNueaHub Core
 
-# --- [🛡️ คำสั่งยา: ยับยั้งการวิ่งแซงกัน] ---
-# ถ้าเจ้านายกด Push ใหม่ ตัวเก่าที่ค้างสีฟ้าจะถูก Cancel ทันที!
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -13,13 +10,11 @@ on:
       - main
 
 env:
-  # ดับคำเตือน Node 24 ตามประกาศ (บังคับใช้รันเนอร์รุ่นใหม่)
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # เพิ่ม Timeout ป้องกันมันหมุนค้างนานเกินไป (ถ้าเกิน 10 นาทีให้ตัดจบ)
     timeout-minutes: 10 
     
     steps:
@@ -46,5 +41,4 @@ jobs:
             --port 8080 \
             --memory 512Mi \
             --cpu 1
-            
             
