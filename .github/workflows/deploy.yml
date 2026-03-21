@@ -35,15 +35,15 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Build and Deploy to Cloud Run
-        # เพิ่ม Flag --no-traffic เพื่อความชัวร์ หรือใช้ --clear-vpc-connector-on-error ถ้ามีปัญหา Network
         run: |
           gcloud run deploy thitnueahub-mobile-ai-lab \
             --source . \
-            --project project-6e34f0b2-4c9d-4422-865 \
+            --project thitnueahub-mobile-ai-lab \
             --region asia-southeast1 \
             --allow-unauthenticated \
             --quiet \
             --port 8080 \
             --memory 512Mi \
             --cpu 1
+            
             
