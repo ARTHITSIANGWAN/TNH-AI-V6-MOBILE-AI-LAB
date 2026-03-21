@@ -1,27 +1,66 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThitNueaHub | Mobile AI Lab</title>
-    <style>
-        body { background-color: #05070a; color: #fff; font-family: system-ui, sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        .main-card { padding: 20px; animation: fadeIn 1.2s ease-out; }
-        .tiger-frame { width: 250px; height: 250px; border-radius: 50%; overflow: hidden; border: 2px solid #58a6ff; box-shadow: 0 0 40px rgba(88,166,255,0.3); margin: 0 auto 20px; }
-        .tiger-frame img { width: 100%; height: 100%; object-fit: cover; }
-        h1 { font-size: 2.2rem; letter-spacing: 4px; margin: 0; background: linear-gradient(to right, #fff, #58a6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .status-bar { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); border-radius: 50px; padding: 8px 20px; font-size: 0.75rem; display: inline-flex; align-items: center; margin: 20px 0; }
-        .status-dot { width: 8px; height: 8px; background: #00ffc3; border-radius: 50%; margin-right: 10px; box-shadow: 0 0 10px #00ffc3; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-    <div class="main-card">
-        <div class="tiger-frame"><img src="image_0.png" alt="Tiger"></div>
-        <h1>ThitNueaHub</h1>
-        <div class="status-bar"><div class="status-dot"></div>SYSTEM ONLINE: DARK-RELAY V3.5</div>
-        <p style="color:#8b949e; font-style:italic;">"พายุไม่ได้มาเพื่อทำลาย... แต่มาเพื่อประกาศศักดา"</p>
+<div id="kaewta-container" class="kaewta-glass">
+    <div class="kaewta-header">
+        <div class="kaewta-status-dot pulse-green"></div>
+        <h3>แก้วตา (Kaewta Agent)</h3>
     </div>
-</body>
-</html>
+    
+    <div class="energy-bar-container">
+        <div class="energy-pulse shimmer">ENERGY LEVEL: 99%</div>
+    </div>
+
+    <div id="chat-display" class="chat-box">
+        <p class="kaewta-msg">สวัสดีค่ะบอส แก้วตาพร้อมจัดการโปรเจกต์ project-6e34f0b2 แล้วค่ะ!</p>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="user-input" placeholder="สั่งงานแก้วตาที่นี่..." />
+        <button onclick="sendToKaewta()" id="btn-command">
+            <span>🚀 สั่งงานแก้วตา</span>
+        </button>
+    </div>
+</div>
+
+<style>
+/* ตกแต่งแบบ Glassmorphism ให้ดูล้ำ */
+.kaewta-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 20px auto;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ปุ่มสั่งงานแบบ High-Energy */
+#btn-command {
+    background: linear-gradient(45deg, #00ff88, #00ccff);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#btn-command:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ff88;
+}
+
+/* Animation แถบพลังงานที่ Gemini เคยแก้ให้ */
+.shimmer {
+    background: linear-gradient(90deg, #00ff88 25%, #ffffff 50%, #00ff88 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes shimmer {
+    to { background-position: -200% 0; }
+}
+</style>
