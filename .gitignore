@@ -1,10 +1,12 @@
-# Zero Garbage Policy - ThitNueaHub Elite
-*.ipynb
-.ipynb_checkpoints/
-*/.ipynb_checkpoints/*
-notebooks/
-t/
-node_modules/
-.env
-*.json
-!*.template.json
+{
+  "name": "thitnueahub-v7-ignite",
+  "version": "1.0.0",
+  "description": "ThitNueaHub AI on Google Cloud Run",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
