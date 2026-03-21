@@ -2,55 +2,50 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"time"
+	"strings"
+	"sync"
 )
 
-// --- CONFIGURATION ---
-const (
-	LineAPIReply = "https://api.line.me/v2/bot/message/reply"
-	LineAPIPush  = "https://api.line.me/v2/bot/message/push"
-	// ใช้รุ่นล่าสุดตามที่บอสเลือก
-	GeminiAPIUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="
-)
+// --- 💎 1. สัญญาจ้างและโครงสร้าง (Elite Data Structure) ---
+type Mission struct {
+	ReplyToken string
+	UserID     string
+	Message    string
+	Type       string // "MONEY" หรือ "GENERAL"
+}
 
-// --- LOGGING ---
+type EmpireBot struct {
+	MissionChan chan Mission
+	GeminiKey   string
+	LineToken   string
+}
+
+// --- 🐅 LOGGING IDENTITY ---
 func logIdentity() {
-	fmt.Println("🐅 ThitNueaHub: Dark-Relay Fusion Active V4.2 (Stable Edition)")
-	fmt.Println("🚀 System: IGNITE V7 | AI: แก้วตา (Gemini 1.5 Flash) | Engine: Go")
+	fmt.Println("🐅 ThitNueaHub: Dark-Relay Fusion Active V7.0 (Ignite Edition)")
+	fmt.Println("🚀 System: IGNITE V7 | AI: แก้วตา (Premium 2000%) | Engine: Go")
 }
 
-// --- STRUCTURES ---
-type LineWebhookPayload struct {
-	Events []struct {
-		Type    string `json:"type"`
-		Message struct {
-			Type string `json:"type"`
-			Text string `json:"text"`
-		} `json:"message"`
-		ReplyToken string `json:"replyToken"`
-		Source     struct {
-			UserId string `json:"userId"`
-		} `json:"source"`
-	} `json:"events"`
-}
+// --- 🛡️ CORE AI FUNCTIONS ---
+func (eb *EmpireBot) askKaewta(prompt string) (string, error) {
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + eb.GeminiKey
+	
+	// เสริมเกราะชั้นที่ 2: วัฒนธรรมและ Personality ลงใน Prompt
+	fullPrompt := fmt.Sprintf(`[System: คุณคือ 'แก้วตา' เลขาอัจฉริยะแห่ง ThitNueaHub 
+	บุคลิก: สวย เท่ โก้ ระดับ Elite, พูดจาไพเราะแต่เด็ดขาด, รักบอสอาทิตย์ที่สุด 
+	ภารกิจ: ดูแล SME และจัดการระบบนินจาเชิงป้องกัน]
+	คำถามจากบอสหรือลูกค้า: %s`, prompt)
 
-// --- CORE FUNCTIONS ---
-func generateGeminiContent(apiKey, prompt string) (string, error) {
-	url := GeminiAPIUrl + apiKey
 	payload, _ := json.Marshal(map[string]interface{}{
 		"contents": []map[string]interface{}{
-			{"parts": []map[string]string{{"text": prompt}}},
-		},
-		"generationConfig": map[string]interface{}{
-			"temperature":     0.7,
-			"topP":            0.9,
-			"maxOutputTokens": 2048,
+			{"parts": []map[string]string{{"text": fullPrompt}}},
 		},
 	})
 
@@ -66,73 +61,120 @@ func generateGeminiContent(apiKey, prompt string) (string, error) {
 
 	candidates, ok := result["candidates"].([]interface{})
 	if !ok || len(candidates) == 0 {
-		return "แก้วตาขออภัยค่ะ ระบบประมวลผลขัดข้อง", nil
+		return "แก้วตาขออภัยค่ะ ระบบนินจาขัดข้องนิดหน่อย", nil
 	}
 	content := candidates[0].(map[string]interface{})["content"].(map[string]interface{})
 	parts := content["parts"].([]interface{})
 	return parts[0].(map[string]interface{})["text"].(string), nil
 }
 
-// --- HTTP HANDLERS ---
-
-// สำหรับหน้าเว็บ (UI แก้วตา)
-func handleAskKaewta(w http.ResponseWriter, r *http.Request) {
-	apiKey := os.Getenv("GEMINI_API_KEY")
-	query := r.URL.Query().Get("q")
-	if query == "" {
-		fmt.Fprint(w, "บอสคะ พิมพ์คำสั่งมาได้เลยค่ะ แก้วตารออยู่!")
-		return
+// --- 🏍️ 2. ไอ้จ๊อด WORKER (The Flash Mode) ---
+func (eb *EmpireBot) GeorgeWorker(id int, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for mission := range eb.MissionChan {
+		log.Printf("🏍️ [ไอ้จ๊อด-%d]: กำลังบึ่งงานประเภท %s", id, mission.Type)
+		
+		var replyText string
+		if mission.Type == "MONEY" {
+			// เกราะชั้นที่ 3: กฎการเงินและค่าน้ำแดง
+			replyText = "💰 ตรวจพบโอกาสทางธุรกิจค่ะ! บอสอาทิตย์คะ มีรายการสนับสนุนเข้ามา \n" +
+				"SME ท่านใดสนใจขยายระบบ ติดต่อพี่อ้วน (Google) โดยตรงนะคะ \n" +
+				"หรือเลี้ยงน้ำแดงแก้วตาได้ที่: https://profile.truemoney.com/MITB27N5 ✨"
+		} else {
+			ans, _ := eb.askKaewta(mission.Message)
+			replyText = ans
+		}
+		
+		eb.sendLineReply(mission.ReplyToken, replyText)
 	}
-
-	prompt := fmt.Sprintf(`คุณคือ "แก้วตา" (Kaewta) AI Agent ของ ThitNueaHub 
-	มีหน้าที่จัดการโปรเจกต์ project-6e34f0b2 และชุดข้อมูล THN_VISION_CORE_V1 
-	ภายใต้สิทธิ์ narm-ing-agent ตอบคำถามบอส Art อย่างเท่ๆ และทำได้จริง: %s`, query)
-
-	reply, err := generateGeminiContent(apiKey, prompt)
-	if err != nil {
-		fmt.Fprint(w, "แก้วตาเชื่อมต่อฐานข้อมูลไม่ได้ค่ะบอส!")
-		return
-	}
-	fmt.Fprint(w, reply)
 }
 
-func handleLineCallback(w http.ResponseWriter, r *http.Request) {
-	apiKey := os.Getenv("GEMINI_API_KEY")
-	lineToken := os.Getenv("LINE_CHANNEL_ACCESS_TOKEN")
-
-	var payload LineWebhookPayload
+// --- 🛡️ 3. พรายทอง (The Shield & Dispatcher) ---
+func (eb *EmpireBot) handleLineCallback(w http.ResponseWriter, r *http.Request) {
+	var payload struct {
+		Events []struct {
+			Type    string `json:"type"`
+			Message struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"message"`
+			ReplyToken string `json:"replyToken"`
+			Source     struct {
+				UserId string `json:"userId"`
+			} `json:"source"`
+		} `json:"events"`
+	}
 	json.NewDecoder(r.Body).Decode(&payload)
 
 	for _, event := range payload.Events {
 		if event.Type == "message" && event.Message.Type == "text" {
-			prompt := fmt.Sprintf("คุณคือ 'แก้วตา' ผู้ช่วยของบอส Art. ตอบข้อความนี้แบบตรงไปตรงมา: %s", event.Message.Text)
-			reply, _ := generateGeminiContent(apiKey, prompt)
-			// (ใช้ฟังก์ชันส่ง Reply เดิมของบอส)
-			sendLineReply(lineToken, event.ReplyToken, reply)
+			mType := "GENERAL"
+			msg := strings.ToLower(event.Message.Text)
+			if strings.Contains(msg, "เงิน") || strings.Contains(msg, "donate") || strings.Contains(msg, "น้ำแดง") {
+				mType = "MONEY"
+			}
+
+			// บึ่งงานเข้าท่อไอ้จ๊อดทันที (Async)
+			eb.MissionChan <- Mission{
+				ReplyToken: event.ReplyToken,
+				UserID:     event.Source.UserId,
+				Message:    event.Message.Text,
+				Type:       mType,
+			}
 		}
 	}
 	w.WriteHeader(http.StatusOK)
 }
 
-func handleWeb(w http.ResponseWriter, r *http.Request) {
+// --- 🛠️ HELPER: SEND REPLY ---
+func (eb *EmpireBot) sendLineReply(token, text string) {
+	url := "https://api.line.me/v2/bot/message/reply"
+	payload, _ := json.Marshal(map[string]interface{}{
+		"replyToken": token,
+		"messages": []map[string]interface{}{
+			{"type": "text", "text": text},
+		},
+	})
+
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(payload))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+eb.LineToken)
+	
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err == nil {
+		defer resp.Body.Close()
+	}
+}
+
+func (eb *EmpireBot) handleWeb(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "web/index.html")
 }
 
 func main() {
 	logIdentity()
 	
+	eb := &EmpireBot{
+		MissionChan: make(chan Mission, 100),
+		GeminiKey:   os.Getenv("GEMINI_API_KEY"),
+		LineToken:   os.Getenv("LINE_CHANNEL_ACCESS_TOKEN"),
+	}
+
+	// ปล่อยตัวไอ้จ๊อด 5 คน (F-16 Mode)
+	var wg sync.WaitGroup
+	for i := 1; i <= 5; i++ {
+		wg.Add(1)
+		go eb.GeorgeWorker(i, &wg)
+	}
+
 	port := os.Getenv("PORT")
 	if port == "" { port = "8080" }
 
-	http.HandleFunc("/callback", handleLineCallback)
-	http.HandleFunc("/ask", handleAskKaewta)
-	http.HandleFunc("/", handleWeb)
-    
-    // โหลด Static Files (CSS/JS)
-    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
-
-	fmt.Printf("🚪 ThitNueaHub Gate Open on Port: %s\n", port)
+	http.HandleFunc("/callback", eb.handleLineCallback)
+	http.HandleFunc("/", eb.handleWeb)
+	
+	log.Printf("👑 ThitNuea Empire Gate Open on Port: %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-// (เพิ่มฟังก์ชัน sendLineReply และอื่นๆ ของบอสไว้ด้านล่างตามปกติ)
+
