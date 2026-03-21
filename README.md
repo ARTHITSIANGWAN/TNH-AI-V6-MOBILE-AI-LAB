@@ -22,8 +22,7 @@
 
 ---
 
-                       ### 💰 "จ่ายตังค์ให้พี่อ้วน (Google)"
-เพื่อความรวดเร็วของพี่น้อง SME เรายอมเสียค่ารันเพื่อให้ระบบตอบสนองทันใจ पेड สถานะ Paid Status 💰
+### <p align="center">💰 "จ่ายตังค์ให้พี่อ้วน"google</p>
 
 <p align="center">
   เพื่อความรวดเร็วของพี่น้อง SME เรายอมเสียค่ารันเพื่อให้ระบบตอบสนองทันใจ <img src="https://img.shields.io/badge/Status-Paid-green?style=flat&logo=cashapp" alt="Paid Status">
@@ -45,6 +44,3 @@
   <img src="https://img.shields.io/badge/Copyright-2026-gray?style=flat-square" alt="Copyright">
   <img src="https://img.shields.io/badge/Zero--Garbage-Policy-lightgrey?style=flat-square" alt="Policy">
 </p>
-### Copyright Policy & MIT License
-© 2026 ThitNueaHub.
-
