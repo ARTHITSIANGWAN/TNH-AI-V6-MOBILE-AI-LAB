@@ -1,4 +1,5 @@
-name: Deploy ThitNueaHub Core
+--project thitnueahub-mobile-ai-lab
+Core
 
 # --- [🛡️ คำสั่งยา: ยับยั้งการวิ่งแซงกัน] ---
 # ถ้าเจ้านายกด Push ใหม่ ตัวเก่าที่ค้างสีฟ้าจะถูก Cancel ทันที!
