@@ -1,7 +1,2 @@
-web/ linguist-vendored
-*.html linguist-detectable=false
-*.css linguist-detectable=false
-*.js linguist-detectable=false
-
 web/** linguist-vendored
 *.html linguist-detectable=false
