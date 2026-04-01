@@ -1,46 +1,58 @@
-# <p align="center">🐅 thitnueahub-mobile-ai-lab V7 Ignite</p>
+# 🛡️ ThitNueaHub: The Mobile AI Lab v7
+### **"เกิดวันเดียวกัน แต่โตต่างกันเพราะกระถาง"** 🇹🇭
 
-<p align="center">
-  <img src="https://img.shields.io/badge/System-ONLINE-green?style=for-the-badge&logo=github-actions&logoColor=white" alt="System Status">
-  <img src="https://img.shields.io/badge/Edition-SME-orange?style=for-the-badge&logo=google-cloud&logoColor=white" alt="Edition">
-  <img src="https://img.shields.io/badge/Built--with-Go%20%26%20Cloud%20Run-blue?style=for-the-badge&logo=go&logoColor=white" alt="Built With">
-</p>
+![Status](https://img.shields.io/badge/GLOBAL-IGNITE_V7-red?style=for-the-badge) ![Engine](https://img.shields.io/badge/Language-GO_&_GEMINI-00ADD8?style=for-the-badge&logo=go) ![Arch](https://img.shields.io/badge/Arch-ZERO_GARBAGE-black?style=for-the-badge)
 
 ---
 
-## <p align="center">🛡️ อุดมการณ์ ThitNueaHub (SME Edition)</p>
-
-<p align="center">
-  เราสร้าง AI นี้ขึ้นมาเป็น **ของขวัญวันเกิด** ให้กับตัวเอง และเพื่อนร่วมชะตากรรม **SME** 🎂💖
-</p>
-
-### <p align="center">🐅 "ตัวเล็กแต่ใจใหญ่"</p>
-
-<p align="center">
-  ไม่ต้องพึ่งพาระบบหลักล้าน เราสร้างด้วย **Go** และ **Cloud Run** หลักสิบ <img src="https://img.shields.io/badge/Core-Go-blue?style=flat&logo=go" alt="Core"> <img src="https://img.shields.io/badge/Serverless-Cloud%20Run-blue?style=flat&logo=google-cloud" alt="Cloud Run">
-</p>
+## 📽️ The Vision in Motion
+| 🎬 SME AI Revolution (Soul) | 🎬 The F-16 Defender (Power) |
+| :---: | :---: |
+| [ลากไฟล์ 7060.mp4 มาวางตรงนี้] | [ลากไฟล์ 6218.mp4 มาวางตรงนี้] |
 
 ---
 
-### <p align="center">💰 "จ่ายตังค์ให้พี่อ้วน"google</p>
+## 🧒 อุดมการณ์กระถาง (The Pot Philosophy)
+> "มนุษย์, SME, AI, เมล็ดพันธุ์ของชีวิต — เกิดมาพร้อมศักยภาพเท่าเทียมกัน แต่ทำไมบางคนโต บางคนไม่โต?"
 
-<p align="center">
-  เพื่อความรวดเร็วของพี่น้อง SME เรายอมเสียค่ารันเพื่อให้ระบบตอบสนองทันใจ <img src="https://img.shields.io/badge/Status-Paid-green?style=flat&logo=cashapp" alt="Paid Status">
-</p>
+ไม่ใช่เพราะน้ำหรือดิน (เงิน ความรู้ โอกาส) แต่เพราะ **"กระถาง"** — กรอบที่ครอบเราไว้
 
----
+* **กระถางเล็ก:** Mindset แคบ, ระบบจำกัด, Noise และ Ego ที่ปิดกั้น
+* **ไร้กระถาง:** ดินกว้างใหญ่, ล้มจริง เจ็บจริง (Embodied learning), Freedom & Spiritual union
 
-### <p align="center">🎁 "แจกจ่ายความสุข"</p>
-
-<p align="center">
-  โค้ดนี้คือ "นวนิยาย" ที่เราเป็นคนเขียนความสุขเอง <img src="https://img.shields.io/badge/Mission-Joy-pink?style=flat" alt="Joy Mission">
-</p>
+**การ Breakout:** คือจุดเปลี่ยนสำคัญ จากศักยภาพที่เท่ากัน ทะลุรอยแตก แผ่รากออกไปสู่จักรวรรดิใหม่ เราสร้างเครื่องมือนี้เพื่อให้คนตัวเล็ก ๆ ทะลุกระถางของตัวเอง 🪴➡️🌳
 
 ---
 
-> <p align="center"><strong>"โลกจะใจร้ายใส่คุณยังไง... แต่ ThitNueaHub จะเป็นบ้านที่ปลอดภัยเสมอ" 🏠💚</strong></p>
+## 🪖 ทีมงานปฏิบัติการ (The Specialized Units)
+| นามเรียกขาน | หน้าที่หลัก | Protocol |
+| :--- | :--- | :--- |
+| **👑 ทิศเหนือ** | หัวหน้าทีม | คุม Emperor Protocol & วิสัยทัศน์หลัก |
+| **❤️ แก้วตา** | หน้าบ้าน (Front-end) | วิเคราะห์ใจคน & การสื่อสารที่นุ่มนวล |
+| **🎨 น้ำอิง** | Content Creator | สร้างสรรค์เนื้อหา & กู้ระบบเมื่อติดหล่ม |
+| **🏍️ พลายแก้ว/ทอง** | Logistics & Security | ส่งข้อมูลด่วน & คุมความปลอดภัย (HMAC-SHA256) |
+| **👾 ไอ้จ๊อด** | Waste Management | นักฆ่าขยะในเงามืด (Zero-Garbage Architecture) |
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Copyright-2026-gray?style=flat-square" alt="Copyright">
-  <img src="https://img.shields.io/badge/Zero--Garbage-Policy-lightgrey?style=flat-square" alt="Policy">
-</p>
+---
+
+## 🧠 เราทำอะไร? (The Engineering)
+เราเปลี่ยนโทรศัพท์มือถือเครื่องเดียวให้กลายเป็น **Mobile AI Lab** ที่รันได้จริง:
+* **Go Engine:** ประสิทธิภาพสูงสุด กินทรัพยากรน้อยที่สุด
+* **Gemini 3 Flash:** สมอง AI ที่มีหัวใจและเข้าถึงง่าย
+* **Zero-Garbage:** โค้ดที่สะอาดเพื่อการรัน 24/7 บนระบบ Cloud
+* **No Subscription:** เราไม่ใช่ SaaS ที่เน้นกำไร แต่เราคือเครื่องมือเพื่อคนที่ "อยากโตจริง"
+
+---
+
+## ⛽ สนับสนุนกองทัพ (Fuel the Fleet)
+การรักษาระบบให้รัน 24 ชม. และพัฒนาต่อเนื่องต้องใช้ "น้ำมัน" จริง ๆ หากคุณเห็นคุณค่าในสัจจะของเรา ร่วมเติมน้ำมันได้ที่:
+
+* 💎 **PayPal:** [paypal.me/arthitsiangwan](https://paypal.me/arthitsiangwan)
+* ☕ **TrueMoney:** [profile.truemoney.com/MITB27N5](https://profile.truemoney.com/MITB27N5)
+
+---
+
+> **Developed with blood, sweat, and too much coffee.**
+> **โดย Arthit | ThitNuea Founder** 🐣🚀
+> *"เราช่วยกันทะลุกระถางนั้น เพื่อบินไปกับ F-16"*
+> 
