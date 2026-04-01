@@ -3,3 +3,5 @@ web/ linguist-vendored
 *.css linguist-detectable=false
 *.js linguist-detectable=false
 
+web/** linguist-vendored
+*.html linguist-detectable=false
