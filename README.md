@@ -1,4 +1,4 @@
-# 🛡️ ThitNueaHub: The Mobile AI Lab v7
+# 🛡️ ThitNueaHub: The Mobile AI Lab v6
 > "เกิดวันเดียวกัน แต่โตต่างกันเพราะกระถาง" 🇹🇭
 
 ![Go](https://img.shields.io/badge/Engine-Go-blue?style=for-the-badge&logo=go)
