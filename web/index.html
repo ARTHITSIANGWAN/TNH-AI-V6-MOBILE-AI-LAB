@@ -3,199 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThitNueaHub | Mobile AI Lab V7</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>TNH | V8.3 MOBILE ORCHESTRATOR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
     
     <style>
         :root {
-            --md-sys-color-background: #121212;
-            --md-sys-color-on-background: #e3e3d7;
-            --md-sys-color-surface: #1b1c15;
-            --md-sys-color-primary: #bbcf82;
-            --md-sys-color-on-primary: #273500;
-            --md-sys-color-outline: #919283;
+            --bg: #0d0d0d;
+            --surface: #1a1a1a;
+            --primary: #bbcf82; /* พยัคฆ์เขียวสัจจะ */
+            --on-primary: #1a1c18;
+            --outline: #333333;
+            --accent: #ffab00;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--md-sys-color-background);
-            color: var(--md-sys-color-on-background);
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            margin: 0; background: var(--bg); color: #e3e3e3;
+            font-family: 'Google Sans Flex', sans-serif;
+            display: flex; flex-direction: column; height: 100vh;
         }
 
         header {
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background-color: var(--md-sys-color-surface);
-            border-bottom: 1px solid var(--md-sys-color-outline);
+            padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+            background: var(--surface); border-bottom: 1px solid var(--outline);
         }
 
-        h1 {
-            font-family: 'Google Sans Flex', sans-serif;
-            font-size: 22px;
-            margin: 0;
-            color: var(--md-sys-color-primary);
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand h1 { font-size: 20px; margin: 0; color: var(--primary); }
+
+        main { display: flex; flex: 1; overflow: hidden; }
+
+        /* Left Pane: Chat Stream (Frontier Style) */
+        #chat-pane { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--outline); }
+        
+        #messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+        .msg { max-width: 80%; padding: 16px; border-radius: 12px; font-size: 15px; line-height: 1.6; position: relative; }
+        .user { background: var(--primary); color: var(--on-primary); align-self: flex-end; border-radius: 20px 20px 4px 20px; }
+        .ai { background: var(--surface); border: 1px solid var(--outline); align-self: flex-start; border-radius: 20px 20px 20px 4px; }
+
+        /* Right Pane: XAI Reasoning (The Soul of V8) */
+        #reasoning-pane { width: 340px; background: #080808; padding: 20px; font-family: 'Roboto Mono', monospace; font-size: 13px; }
+
+        .input-area { padding: 24px; background: var(--surface); display: flex; gap: 12px; align-items: center; }
+        
+        .command-box { 
+            flex: 1; display: flex; align-items: center; background: var(--bg); 
+            border: 1px solid var(--outline); border-radius: 30px; padding: 4px 16px;
+        }
+        input { flex: 1; background: none; border: none; padding: 12px; color: white; outline: none; font-size: 16px; }
+
+        .action-btn { 
+            background: var(--primary); color: var(--on-primary); border: none; 
+            width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* Multi-pane Layout */
-        main {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* Left Pane: Chat Stream */
-        #chat-pane {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--md-sys-color-outline);
-        }
-
-        /* Right Pane: Reasoning Path (XAI) */
-        #reasoning-pane {
-            width: 320px;
-            background-color: #161616;
-            padding: 16px;
-            font-size: 14px;
-        }
-
-        #messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .message {
-            margin-bottom: 16px;
-            padding: 12px 16px;
-            border-radius: 16px;
-            max-width: 80%;
-            line-height: 1.5;
-        }
-
-        .user-msg {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            align-self: flex-end;
-            margin-left: auto;
-        }
-
-        .ai-msg {
-            background-color: var(--md-sys-color-surface);
-            border: 1px solid var(--md-sys-color-outline);
-        }
-
-        .input-area {
-            padding: 20px;
-            display: flex;
-            gap: 12px;
-            background-color: var(--md-sys-color-surface);
-        }
-
-        input {
-            flex: 1;
-            background: transparent;
-            border: 1px solid var(--md-sys-color-outline);
-            border-radius: 28px;
-            padding: 12px 20px;
-            color: white;
-            outline: none;
-        }
-
-        button {
-            background-color: var(--md-sys-color-primary);
-            border: none;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .artifact-card {
-            background: #252525;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-            border-left: 4px solid var(--md-sys-color-primary);
-        }
+        .log-card { background: #111; border-left: 3px solid var(--primary); padding: 12px; margin-bottom: 12px; }
+        .timestamp { color: var(--accent); font-size: 10px; margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <header>
-        <span class="material-symbols-outlined" style="color: var(--md-sys-color-primary)">auto_awesome</span>
-        <h1>THN VISION ELITE <span style="font-size: 12px; font-weight: normal; opacity: 0.7;">V7 Ignite</span></h1>
+        <div class="brand">
+            <span class="material-symbols-outlined">shield_person</span>
+            <h1>TNH EMPIRE <span style="font-weight: 400; opacity: 0.5;">V8.3 PRO</span></h1>
+        </div>
+        <div style="color: var(--primary); font-size: 12px; display: flex; align-items: center; gap: 5px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">potted_plant</span> GO ENGINE ACTIVE
+        </div>
     </header>
 
     <main>
         <section id="chat-pane">
             <div id="messages">
-                <div class="message ai-msg">
-                    สวัสดีค่ะบอส Art! 🐅 แก้วตา (Elite Agent) พร้อมลุยโปรเจกต์ <b>thitnueahub-mobile-ai-lab</b> แล้วค่ะ วันนี้มีกลยุทธ์ Zero Garbage อะไรให้แก้วตาวิจัยคะ?
+                <div class="msg ai">
+                    <b>สวัสดียามดึกเจ้าค่ะบอส Art!</b> 🐅 <br>
+                    น้ำอิงศัลยกรรมร่าง V6 สู่ <b>V8.3 Trinity</b> เรียบร้อยแล้วค่ะ <br>
+                    ด่านกักกัน 401 และระบบพรางสาส์นลับ PNG พร้อมปฏิบัติการแล้วเจ้าค่ะ!
                 </div>
             </div>
             <div class="input-area">
-                <input type="text" id="query" placeholder="สั่งการแก้วตา..." onkeypress="if(event.key==='Enter') send()">
-                <button onclick="send()">
-                    <span class="material-symbols-outlined">send</span>
+                <div class="command-box">
+                    <span class="material-symbols-outlined" style="color: #666; cursor: pointer;">image_search</span>
+                    <input type="text" id="query" placeholder="Hammering command..." onkeypress="if(event.key==='Enter') fire()">
+                </div>
+                <button class="action-btn" onclick="fire()">
+                    <span class="material-symbols-outlined">bolt</span>
                 </button>
             </div>
         </section>
 
         <section id="reasoning-pane">
-            <h3 style="display: flex; align-items: center; gap: 8px;">
-                <span class="material-symbols-outlined">psychology</span> Reasoning Path
-            </h3>
-            <div id="steps" style="opacity: 0.7; line-height: 2;">
-                <div class="artifact-card">🟢 System Standby</div>
-                <div style="margin-top: 10px;">• Waiting for command...</div>
+            <h3 style="color: var(--primary); font-size: 16px; margin-top: 0;">[ REASONING PATH ]</h3>
+            <div id="trace">
+                <div class="log-card">
+                    <div class="timestamp">06-05-2026 23:04:14</div>
+                    • SYSTEM: V8.3 Trinity <br>
+                    • STATUS: STANDBY <br>
+                    • LAYER: Zero Garbage Enabled
+                </div>
             </div>
         </section>
     </main>
 
     <script>
-        async function send() {
+        async function fire() {
             const input = document.getElementById('query');
-            const msg = input.value;
+            const msg = input.value.trim();
             if(!msg) return;
 
-            // Add user message to UI
             const messages = document.getElementById('messages');
-            messages.innerHTML += `<div class="message user-msg">${msg}</div>`;
+            messages.innerHTML += `<div class="msg user">${msg}</div>`;
             input.value = '';
 
-            // Update Reasoning Path
-            const steps = document.getElementById('steps');
-            steps.innerHTML = `
-                <div class="artifact-card">🟡 Processing...</div>
-                <div>• Analyzing: "${msg}"</div>
-                <div>• Tool: Gemini 1.5 Flash</div>
-                <div>• Strategy: Zero Garbage Filtering</div>
-            `;
+            const trace = document.getElementById('trace');
+            const now = new Date().toLocaleTimeString();
+            trace.innerHTML = `
+                <div class="log-card">
+                    <div class="timestamp">${now}</div>
+                    • ACTION: ${msg} <br>
+                    • ENGINE: GO / PORT 2026 <br>
+                    • TASK: SCHEDULING...
+                </div>
+            ` + trace.innerHTML;
 
-            // Call API
             try {
-                const response = await fetch(`/ask?q=${encodeURIComponent(msg)}`);
-                const data = await response.text();
+                // เชื่อมต่อกับ Backend Go Engine V8.3
+                const response = await fetch(`/schedule`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ action: msg, ts: Math.floor(Date.now()/1000) })
+                });
                 
-                messages.innerHTML += `<div class="message ai-msg">${data}</div>`;
-                steps.innerHTML += `<div class="artifact-card">🟢 Analysis Complete</div>`;
+                if (response.status === 202) {
+                    messages.innerHTML += `<div class="msg ai">สัจจะดิจิทัลถูกบันทึกลงคิวขุนพลแล้วเจ้าค่ะบอส! 0.16ms 🔥</div>`;
+                } else {
+                    messages.innerHTML += `<div class="msg ai">ด่านตรวจดีดกลับ (Error: ${response.status}) บอสเช็คสิทธิหรือยังคะ?</div>`;
+                }
                 messages.scrollTop = messages.scrollHeight;
             } catch (e) {
-                messages.innerHTML += `<div class="message ai-msg">ขออภัยค่ะบอส ระบบขัดข้องนิดหน่อย!</div>`;
+                messages.innerHTML += `<div class="msg ai">ระบบพ่ายแพ้! สงสัยด่าน 401 แข็งแกร่งเกินไปเจ้าค่ะ</div>`;
             }
         }
     </script>
 </body>
-                    </html>
-    
+</html>
