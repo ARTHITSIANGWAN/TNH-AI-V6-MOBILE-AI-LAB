@@ -1,32 +1,25 @@
-const express = require('express');
-const app = express();
+# --- [Stage 1: Build the Go Engine] ---
+FROM golang:1.22-alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+# คอมไพล์ Go Engine ให้เป็นไบนารีที่เบาหวิว
+RUN go build -o tnh-engine ./cmd/main.go
 
-app.use(express.json());
+# --- [Stage 2: Final Sovereign Image] ---
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates libc6-compat
+WORKDIR /root/
 
-// --- [🛡️ หน้าแรก: ป้องกัน 404 และเช็คสถานะระบบ] ---
-app.get('/', (req, res) => {
-  res.status(200).send(`
-    <html>
-      <body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
-        <h1 style="color: #0F9D58;">🐅 ThitNueaHub V7 Ignite Online!</h1>
-        <p>ระบบทำงานปกติในบ้านหลังใหม่ (Mobile AI Lab) เรียบร้อยแล้วค่ะบอส</p>
-        <div style="margin-top: 20px; color: #666;">
-          <small>Project ID: thitnueahub-mobile-ai-lab</small>
-        </div>
-      </body>
-    </html>
-  `);
-});
+# ดึงไบนารีจาก Stage 1
+COPY --from=builder /app/tnh-engine .
+# ดึงไฟล์ Web UI (V6 ที่เราแก้ใหม่เป็น V8.3)
+COPY ./web ./web
 
-// --- [🤖 Webhook สำหรับรับค่าจาก LINE หรือ API อื่นๆ] ---
-app.post('/webhook', (req, res) => {
-  console.log('--- Received Webhook Data ---');
-  console.log(JSON.stringify(req.body, null, 2));
-  res.status(200).send('OK');
-});
+# ตั้งค่า Environment สำหรับ Cloud Run
+ENV PORT=2026
+EXPOSE 2026
 
-// --- [🔌 Port Setup สำหรับ Google Cloud Run] ---
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+# จุดไฟจักรวรรดิ!
+CMD ["./tnh-engine"]
