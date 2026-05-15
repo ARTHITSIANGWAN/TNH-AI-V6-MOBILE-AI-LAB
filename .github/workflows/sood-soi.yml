@@ -1,0 +1,38 @@
+name: 🚀 TNH_AI_SOOD_SOI_UNIFIER
+on:
+  workflow_dispatch: # ปุ่มกด Ignite ด้วยมือจอมทัพ
+
+jobs:
+  push_to_empire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛡️ Step 1: Checkout Source (5S Audit)
+        uses: actions/checkout@v4
+
+      - name: 📦 Step 2: Pack Everything (TS/TOML/JSON)
+        run: |
+          mkdir -p bundle
+          # กวาดเรียบ: โค้ด, ตั้งค่า, และสมอง AI
+          rsync -av --exclude='.git' --exclude='.github' --exclude='node_modules' ./ bundle/
+
+      - name: 🚚 Step 3: Ignite to Project 13
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+        run: |
+          git config --global user.name "TNH-AI-JOD-L5"
+          git config --global user.email "jod@tnh.ai"
+          
+          # ดึงมหาจักรวรรดิปลายทางมา (โปรเจกต์ 13)
+          git clone https://x-access-token:${GH_TOKEN}@github.com/ARTHITSIANGWAN/TNH-AI-9th-Era-of-Fire-AI-Orchestra-Mastering-Go-Engine- destination
+          
+          # แยกสัดส่วนตามแหล่งที่มา (เช่น v83, project12)
+          # บอสเปลี่ยนชื่อโฟลเดอร์ปลายทางได้ตรง "from_source" นะก้า
+          TARGET_DIR="destination/from_$(basename $GITHUB_REPOSITORY)"
+          mkdir -p $TARGET_DIR
+          cp -rv bundle/* $TARGET_DIR/
+          
+          cd destination
+          git add .
+          git commit -m "L5: [สุดซอย] ย้ายกองกำลังจาก $GITHUB_REPOSITORY มาสมทบแล้วก้า! 🤫" || echo "No changes"
+          git push
+          
