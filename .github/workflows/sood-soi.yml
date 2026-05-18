@@ -57,4 +57,4 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           command: deploy --var PORT:2026 # บังคับล็อกหน้าด่านให้ชี้มาที่พอร์ตแห่งอนาคต 2026 จุดเดียว
-          
+
