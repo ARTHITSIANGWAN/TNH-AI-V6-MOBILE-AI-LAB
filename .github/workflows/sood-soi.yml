@@ -1,38 +1,60 @@
-name: 🚀 TNH_AI_SOOD_SOI_UNIFIER
+name: 🚀 TNH_AI_SOOD_SOI_MASTER_UNIFIER
 on:
-  workflow_dispatch: # ปุ่มกด Ignite ด้วยมือจอมทัพ
+  workflow_dispatch: # ปุ่มกด Ignite ด้วยมือจอมทัพบนโทรศัพท์มือถือ
 
 jobs:
-  push_to_empire:
+  unified_pipeline:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛡️ Step 1: Checkout Source (5S Audit)
+      - name: 🛡️ Step 1: Checkout Source (5S Audit - สะสาง)
         uses: actions/checkout@v4
 
-      - name: 📦 Step 2: Pack Everything (TS/TOML/JSON)
+      - name: 📦 Step 2: Pack Pure Code (คัดขยะมีเดียและน้ำหนักเกินออก)
         run: |
           mkdir -p bundle
-          # กวาดเรียบ: โค้ด, ตั้งค่า, และสมอง AI
-          rsync -av --exclude='.git' --exclude='.github' --exclude='node_modules' ./ bundle/
+          # [คำสั่งเด็ดขาด] คัด Dockerfile และไฟล์วิดีโอ (.mp4) รูปภาพ (.jpg) 
+          # ออกจากท่อขนส่งทันที คืนแรมให้เครื่องยนต์ Go เบาหวิวที่สุด!
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='Dockerfile' \
+            --exclude='*.mp4' \
+            --exclude='*.jpg' \
+            --exclude='*.png' \
+            ./ bundle/
 
-      - name: 🚚 Step 3: Ignite to Project 13
+      - name: 🚚 Step 3: Ignite to Project 13 (Monolith Hub)
         env:
           GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
           git config --global user.name "TNH-AI-JOD-L5"
           git config --global user.email "jod@tnh.ai"
           
-          # ดึงมหาจักรวรรดิปลายทางมา (โปรเจกต์ 13)
+          echo "⏳ [0.32ms]: กำลังเปิดสะพานเชื่อมเชื่อมโยงไปยัง มหาจักรวรรดิโปรเจกต์ 13..."
           git clone https://x-access-token:${GH_TOKEN}@github.com/ARTHITSIANGWAN/TNH-AI-9th-Era-of-Fire-AI-Orchestra-Mastering-Go-Engine- destination
           
-          # แยกสัดส่วนตามแหล่งที่มา (เช่น v83, project12)
-          # บอสเปลี่ยนชื่อโฟลเดอร์ปลายทางได้ตรง "from_source" นะก้า
+          # สร้างโฟลเดอร์แยกตามชื่อคลังแสงอัตโนมัติป้องกันชื่อไฟล์ชนกัน
           TARGET_DIR="destination/from_$(basename $GITHUB_REPOSITORY)"
           mkdir -p $TARGET_DIR
+          
+          echo "🚚 [Transfer]: กำลังย้ายไฟล์โค้ดเข้าสู่ศูนย์ควบคุมพอร์ตเดี่ยว :2026..."
           cp -rv bundle/* $TARGET_DIR/
           
           cd destination
           git add .
-          git commit -m "L5: [สุดซอย] ย้ายกองกำลังจาก $GITHUB_REPOSITORY มาสมทบแล้วก้า! 🤫" || echo "No changes"
+          
+          # ถ้าไม่มีการอัปเดตของโค้ด ให้ข้ามทันทีท่อไม่ระเบิด
+          git commit -m "L5: [สุดซอยมหาเวทย์] หลอมรวมขุนพลจาก $(basename $GITHUB_REPOSITORY) สยบศึกโค้ดชนพอร์ตพินาศแล้วก้า! 🤫" || echo "No changes to commit"
+          
+          echo "⚡ [Push]: ส่งกำลังพลเข้าสู่ฐานบัญชาการก้อนกลางสำเร็จ!"
           git push
+
+      # ☁️ ควบรวมหน้าที่เดิมของ deploy.yml มาไว้ท้ายท่อที่นี่ที่เดียว ไม่ให้แย่งพอร์ตกันรัน
+      - name: ⚡ Step 4: Cloudflare Workers Deploy (The Thin Gateway)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: deploy --var PORT:2026 # บังคับล็อกหน้าด่านให้ชี้มาที่พอร์ตแห่งอนาคต 2026 จุดเดียว
           
