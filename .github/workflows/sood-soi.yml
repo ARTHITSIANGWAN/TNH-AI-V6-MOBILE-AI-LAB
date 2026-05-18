@@ -1,60 +1,50 @@
-name: 🚀 TNH_AI_SOOD_SOI_MASTER_UNIFIER
+name: 🚀 TNH_AI_SOOD_SOI_UNIFIER
 on:
-  workflow_dispatch: # ปุ่มกด Ignite ด้วยมือจอมทัพบนโทรศัพท์มือถือ
+  workflow_dispatch: # ปุ่มกด Ignite ด้วยมือจอมทัพบนหน้าจอโทรศัพท์
 
 jobs:
-  unified_pipeline:
+  push_to_empire:
     runs-on: ubuntu-latest
     steps:
       - name: 🛡️ Step 1: Checkout Source (5S Audit - สะสาง)
         uses: actions/checkout@v4
 
-      - name: 📦 Step 2: Pack Pure Code (คัดขยะมีเดียและน้ำหนักเกินออก)
+      - name: 📦 Step 2: Pack Everything (TS/TOML/JSON - คุมน้ำหนักตัวเบา)
         run: |
           mkdir -p bundle
-          # [คำสั่งเด็ดขาด] คัด Dockerfile และไฟล์วิดีโอ (.mp4) รูปภาพ (.jpg) 
-          # ออกจากท่อขนส่งทันที คืนแรมให้เครื่องยนต์ Go เบาหวิวที่สุด!
+          # [ทางน้ำไหลสะดวก] กวาดโค้ดทั้งหมดไปรวมศูนย์ แต่แอบคัดไฟล์วิดีโอ (.mp4) และรูป (.jpg) 
+          # ออกจากท่อโยกย้ายชั่วคราว เพื่อไม่ให้ไฟล์มีเดียหนักๆ วิ่งไปทับถมจนฐานข้อมูลโปรเจกต์ 13 อืด 
           rsync -av \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='node_modules' \
-            --exclude='Dockerfile' \
             --exclude='*.mp4' \
             --exclude='*.jpg' \
-            --exclude='*.png' \
             ./ bundle/
 
-      - name: 🚚 Step 3: Ignite to Project 13 (Monolith Hub)
+      - name: 🚚 Step 3: Ignite to Project 13 (Monolith Target)
         env:
           GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
           git config --global user.name "TNH-AI-JOD-L5"
           git config --global user.email "jod@tnh.ai"
           
-          echo "⏳ [0.32ms]: กำลังเปิดสะพานเชื่อมเชื่อมโยงไปยัง มหาจักรวรรดิโปรเจกต์ 13..."
+          echo "⏳ [0.32ms]: เปิดสะพานล่องหน ดึงมหาจักรวรรดิโปรเจกต์ 13 ลงมา..."
           git clone https://x-access-token:${GH_TOKEN}@github.com/ARTHITSIANGWAN/TNH-AI-9th-Era-of-Fire-AI-Orchestra-Mastering-Go-Engine- destination
           
-          # สร้างโฟลเดอร์แยกตามชื่อคลังแสงอัตโนมัติป้องกันชื่อไฟล์ชนกัน
+          # แยกสัดส่วนโฟลเดอร์อัตโนมัติ ตามรอยตราประทับของคลังแสงต้นทาง
           TARGET_DIR="destination/from_$(basename $GITHUB_REPOSITORY)"
           mkdir -p $TARGET_DIR
           
-          echo "🚚 [Transfer]: กำลังย้ายไฟล์โค้ดเข้าสู่ศูนย์ควบคุมพอร์ตเดี่ยว :2026..."
+          echo "🚚 [Transfer]: โยกย้ายไฟล์รหัสบริสุทธิ์เข้าสู่พื้นที่พอร์ตเดี่ยว :2026..."
           cp -rv bundle/* $TARGET_DIR/
           
           cd destination
           git add .
           
-          # ถ้าไม่มีการอัปเดตของโค้ด ให้ข้ามทันทีท่อไม่ระเบิด
-          git commit -m "L5: [สุดซอยมหาเวทย์] หลอมรวมขุนพลจาก $(basename $GITHUB_REPOSITORY) สยบศึกโค้ดชนพอร์ตพินาศแล้วก้า! 🤫" || echo "No changes to commit"
+          # ดักจับสถานะ หากโค้ดไม่มีการเคลื่อนไหวให้ปล่อยผ่านทันที ท่อไม่ระเบิดแน่นอนบอส!
+          git commit -m "L5: [สุดซอยสายหลบหลีก] ย้ายกองกำลังจาก $(basename $GITHUB_REPOSITORY) เข้าคลังกลางพร้อมเปิดสถานะสดแล้วก้า! 🤫" || echo "No changes"
           
-          echo "⚡ [Push]: ส่งกำลังพลเข้าสู่ฐานบัญชาการก้อนกลางสำเร็จ!"
+          echo "⚡ [Ignite]: ดันซอร์สโค้ดทะลุกำแพงเข้าโปรเจกต์ 13 สำเร็จ!"
           git push
-
-      # ☁️ ควบรวมหน้าที่เดิมของ deploy.yml มาไว้ท้ายท่อที่นี่ที่เดียว ไม่ให้แย่งพอร์ตกันรัน
-      - name: ⚡ Step 4: Cloudflare Workers Deploy (The Thin Gateway)
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: deploy --var PORT:2026 # บังคับล็อกหน้าด่านให้ชี้มาที่พอร์ตแห่งอนาคต 2026 จุดเดียว
-
+          
