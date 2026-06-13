@@ -1,0 +1,26 @@
+name: Go CI/CD Engine
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# 🚀 เติมบล็อกคำสั่ง env ตรงนี้เพื่อบังคับปลดล็อกท่อ Node24 ทันที ไร้ขยะระบบ!
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go Engine
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+
+    - name: Run Code Audit & Formatting
+      run: go test -v ./...
+      
