@@ -1,16 +1,38 @@
-// ส่งสัญญาณเชื่อมสถาปัตยกรรมข้ามพอร์ตในเครื่องเดียว
-func LinkToPythonAgent(action string, project string) {
-	targetURL := "http://127.0.0.1:5000/process"
-	
-	// แพ็คข้อมูลตามระนาบพิมพ์เขียว V6
-	payload := map[string]interface{}{
-		"sender": "TNH-AI-V6-LAB",
-		"action": action,
-		"payload": map[string]string{
-			"project": project,
-			"analysis_type": "3_LEGGED_BALANCER",
-		},
+Blame
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	// กำหนด Port สำหรับ Cloud Run
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
-    
-	// (ใช้ฟังก์ชัน http.NewRequest แนบโทเคน SecureToken2026 ยิงเข้าพอร์ต 5000 ทันที)
+
+	// Serve Static Files (เพื่อให้ดึงรูปภาพขึ้นมาโชว์ได้)
+	fs := http.FileServer(http.Dir("."))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	// Handler สำหรับหน้าแรก
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// ป้องกันปัญหาเบราว์เซอร์ดาวน์โหลดไฟล์ แทนที่จะแสดงผล
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		http.ServeFile(w, r, "index.html")
+	})
+
+	// เพื่อให้หน้าเว็บดึงรูปภาพจากโฟลเดอร์เดียวกันได้เลย
+	http.HandleFunc("/7873.jpg", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "7873.jpg")
+	})
+
+	fmt.Printf("ThitNueaHub Server starting on port %s...\n", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal(err)
+	}
 }
