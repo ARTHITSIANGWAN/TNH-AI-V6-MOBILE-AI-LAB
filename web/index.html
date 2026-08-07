@@ -1,151 +1,66 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TNH | V8.3 MOBILE ORCHESTRATOR</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+<div id="kaewta-container" class="kaewta-glass">
+    <div class="kaewta-header">
+        <div class="kaewta-status-dot pulse-green"></div>
+        <h3>แก้วตา (Kaewta Agent)</h3>
+    </div>
     
-    <style>
-        :root {
-            --bg: #0d0d0d;
-            --surface: #1a1a1a;
-            --primary: #bbcf82; /* พยัคฆ์เขียวสัจจะ */
-            --on-primary: #1a1c18;
-            --outline: #333333;
-            --accent: #ffab00;
-        }
+    <div class="energy-bar-container">
+        <div class="energy-pulse shimmer">ENERGY LEVEL: 99%</div>
+    </div>
 
-        body {
-            margin: 0; background: var(--bg); color: #e3e3e3;
-            font-family: 'Google Sans Flex', sans-serif;
-            display: flex; flex-direction: column; height: 100vh;
-        }
+    <div id="chat-display" class="chat-box">
+        <p class="kaewta-msg">สวัสดีค่ะบอส แก้วตาพร้อมจัดการโปรเจกต์ project-6e34f0b2 แล้วค่ะ!</p>
+    </div>
 
-        header {
-            padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
-            background: var(--surface); border-bottom: 1px solid var(--outline);
-        }
+    <div class="input-group">
+        <input type="text" id="user-input" placeholder="สั่งงานแก้วตาที่นี่..." />
+        <button onclick="sendToKaewta()" id="btn-command">
+            <span>🚀 สั่งงานแก้วตา</span>
+        </button>
+    </div>
+</div>
 
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand h1 { font-size: 20px; margin: 0; color: var(--primary); }
+<style>
+/* ตกแต่งแบบ Glassmorphism ให้ดูล้ำ */
+.kaewta-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 20px auto;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        main { display: flex; flex: 1; overflow: hidden; }
+/* ปุ่มสั่งงานแบบ High-Energy */
+#btn-command {
+    background: linear-gradient(45deg, #00ff88, #00ccff);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-        /* Left Pane: Chat Stream (Frontier Style) */
-        #chat-pane { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--outline); }
-        
-        #messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+#btn-command:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ff88;
+}
 
-        .msg { max-width: 80%; padding: 16px; border-radius: 12px; font-size: 15px; line-height: 1.6; position: relative; }
-        .user { background: var(--primary); color: var(--on-primary); align-self: flex-end; border-radius: 20px 20px 4px 20px; }
-        .ai { background: var(--surface); border: 1px solid var(--outline); align-self: flex-start; border-radius: 20px 20px 20px 4px; }
+/* Animation แถบพลังงานที่ Gemini เคยแก้ให้ */
+.shimmer {
+    background: linear-gradient(90deg, #00ff88 25%, #ffffff 50%, #00ff88 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        /* Right Pane: XAI Reasoning (The Soul of V8) */
-        #reasoning-pane { width: 340px; background: #080808; padding: 20px; font-family: 'Roboto Mono', monospace; font-size: 13px; }
-
-        .input-area { padding: 24px; background: var(--surface); display: flex; gap: 12px; align-items: center; }
-        
-        .command-box { 
-            flex: 1; display: flex; align-items: center; background: var(--bg); 
-            border: 1px solid var(--outline); border-radius: 30px; padding: 4px 16px;
-        }
-        input { flex: 1; background: none; border: none; padding: 12px; color: white; outline: none; font-size: 16px; }
-
-        .action-btn { 
-            background: var(--primary); color: var(--on-primary); border: none; 
-            width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .log-card { background: #111; border-left: 3px solid var(--primary); padding: 12px; margin-bottom: 12px; }
-        .timestamp { color: var(--accent); font-size: 10px; margin-bottom: 5px; }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="brand">
-            <span class="material-symbols-outlined">shield_person</span>
-            <h1>TNH EMPIRE <span style="font-weight: 400; opacity: 0.5;">V8.3 PRO</span></h1>
-        </div>
-        <div style="color: var(--primary); font-size: 12px; display: flex; align-items: center; gap: 5px;">
-            <span class="material-symbols-outlined" style="font-size: 16px;">potted_plant</span> GO ENGINE ACTIVE
-        </div>
-    </header>
-
-    <main>
-        <section id="chat-pane">
-            <div id="messages">
-                <div class="msg ai">
-                    <b>สวัสดียามดึกเจ้าค่ะบอส Art!</b> 🐅 <br>
-                    น้ำอิงศัลยกรรมร่าง V6 สู่ <b>V8.3 Trinity</b> เรียบร้อยแล้วค่ะ <br>
-                    ด่านกักกัน 401 และระบบพรางสาส์นลับ PNG พร้อมปฏิบัติการแล้วเจ้าค่ะ!
-                </div>
-            </div>
-            <div class="input-area">
-                <div class="command-box">
-                    <span class="material-symbols-outlined" style="color: #666; cursor: pointer;">image_search</span>
-                    <input type="text" id="query" placeholder="Hammering command..." onkeypress="if(event.key==='Enter') fire()">
-                </div>
-                <button class="action-btn" onclick="fire()">
-                    <span class="material-symbols-outlined">bolt</span>
-                </button>
-            </div>
-        </section>
-
-        <section id="reasoning-pane">
-            <h3 style="color: var(--primary); font-size: 16px; margin-top: 0;">[ REASONING PATH ]</h3>
-            <div id="trace">
-                <div class="log-card">
-                    <div class="timestamp">06-05-2026 23:04:14</div>
-                    • SYSTEM: V8.3 Trinity <br>
-                    • STATUS: STANDBY <br>
-                    • LAYER: Zero Garbage Enabled
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        async function fire() {
-            const input = document.getElementById('query');
-            const msg = input.value.trim();
-            if(!msg) return;
-
-            const messages = document.getElementById('messages');
-            messages.innerHTML += `<div class="msg user">${msg}</div>`;
-            input.value = '';
-
-            const trace = document.getElementById('trace');
-            const now = new Date().toLocaleTimeString();
-            trace.innerHTML = `
-                <div class="log-card">
-                    <div class="timestamp">${now}</div>
-                    • ACTION: ${msg} <br>
-                    • ENGINE: GO / PORT 2026 <br>
-                    • TASK: SCHEDULING...
-                </div>
-            ` + trace.innerHTML;
-
-            try {
-                // เชื่อมต่อกับ Backend Go Engine V8.3
-                const response = await fetch(`/schedule`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ action: msg, ts: Math.floor(Date.now()/1000) })
-                });
-                
-                if (response.status === 202) {
-                    messages.innerHTML += `<div class="msg ai">สัจจะดิจิทัลถูกบันทึกลงคิวขุนพลแล้วเจ้าค่ะบอส! 0.16ms 🔥</div>`;
-                } else {
-                    messages.innerHTML += `<div class="msg ai">ด่านตรวจดีดกลับ (Error: ${response.status}) บอสเช็คสิทธิหรือยังคะ?</div>`;
-                }
-                messages.scrollTop = messages.scrollHeight;
-            } catch (e) {
-                messages.innerHTML += `<div class="msg ai">ระบบพ่ายแพ้! สงสัยด่าน 401 แข็งแกร่งเกินไปเจ้าค่ะ</div>`;
-            }
-        }
-    </script>
-</body>
-</html>
+@keyframes shimmer {
+    to { background-position: -200% 0; }
+}
+</style>
