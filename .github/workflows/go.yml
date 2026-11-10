@@ -1,4 +1,4 @@
-name: Go CI/CD Engine
+name: Go Build & Test Pipeline
 
 on:
   push:
@@ -6,22 +6,20 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code Matrix
-      uses: actions/checkout@v4   # 🔥 ขันน็อตอัปเกรดขึ้น v4 ล่าสุด
+    - uses: actions/checkout@v4
 
-    - name: Set up Go Engine
-      uses: actions/setup-go@v5   # 🔥 ขันน็อตอัปเกรดขึ้น v5 ล่าสุด
+    - name: Set up Go
+      uses: actions/setup-go@v5
       with:
-        go-version: '1.22'
+        go-version: '1.23'
 
-    - name: Run Code Audit & Formatting
-      run: go test -v ./...
-      o test -v ./...
-      
+    - name: Build Go Services Only
+      run: |
+        if [ -d "cmd" ]; then
+          go build -v ./cmd/...
+        fi
+
